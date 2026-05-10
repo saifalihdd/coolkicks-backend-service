@@ -1,0 +1,11 @@
+{
+  "name": "coolkicks-consumer",
+  "version": "1.0.0",
+  "main": "consumer.js",
+  "dependencies": {
+    "amqplib": "^0.10.3",
+    "dotenv": "^16.3.1",
+    "mysql2": "^3.6.5",
+    "sequelize": "^6.35.1"
+  }
+}
