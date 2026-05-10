@@ -233,8 +233,51 @@ coolkicks/
 ├── auth-service/
 ├── product-service/
 ├── order-consumer/
+├── screenshots/
 └── README.md
 ```
+
+---
+
+## Screenshots
+
+### Auth Service
+
+| No | Endpoint | Screenshot |
+|---|---|---|
+| 1 | POST `/auth/register` — customer | ![register-customer](screenshots/auth-register-customer.png) |
+| 2 | POST `/auth/register` — admin | ![register-admin](screenshots/auth-register-admin.png) |
+| 3 | POST `/auth/login` — customer | ![login-customer](screenshots/auth-login-customer.png) |
+| 4 | POST `/auth/login` — admin | ![login-admin](screenshots/auth-login-admin.png) |
+| 5 | GET `/auth/profile` | ![profile](screenshots/auth-get-profile.png) |
+| 6 | GET `/auth/users` — admin | ![get-all-users](screenshots/auth-get-all-users.png) |
+| 7 | DELETE `/auth/users/:id` — admin | ![delete-user](screenshots/auth-delete-user.png) |
+
+### Product Service
+
+| No | Endpoint | Screenshot |
+|---|---|---|
+| 8 | GET `/products` | ![get-all-products](screenshots/product-get-all.png) |
+| 9 | GET `/products/:id` | ![get-product-by-id](screenshots/product-get-by-id.png) |
+| 10 | POST `/products` — admin | ![create-product](screenshots/product-create.png) |
+| 11 | PUT `/products/:id` — admin | ![update-product](screenshots/product-update.png) |
+| 12 | DELETE `/products/:id` — admin | ![delete-product](screenshots/product-delete.png) |
+
+### Order Service
+
+| No | Endpoint | Screenshot |
+|---|---|---|
+| 13 | POST `/orders` — customer | ![create-order](screenshots/order-create.png) |
+| 14 | GET `/orders/my` — customer | ![get-my-orders](screenshots/order-get-my.png) |
+| 15 | PUT `/orders/:id/cancel` — customer | ![cancel-order](screenshots/order-cancel.png) |
+| 16 | GET `/orders` — admin | ![get-all-orders](screenshots/order-get-all.png) |
+| 17 | PUT `/orders/:id/status` — admin | ![update-order-status](screenshots/order-update-status.png) |
+
+### Gateway
+
+| No | Endpoint | Screenshot |
+|---|---|---|
+| 18 | GET `/health` | ![gateway-health](screenshots/gateway-health-check.png) |
 
 ---
 
