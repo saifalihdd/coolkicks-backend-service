@@ -1,0 +1,721 @@
+{
+  "info": {
+    "name": "CoolKicks API",
+    "description": "Collection endpoint untuk CoolKicks Sneaker Shop Backend Service",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://103.147.92.134:4081",
+      "type": "string"
+    },
+    {
+      "key": "token_admin",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "token_customer",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth Service",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Saif Ali\",\n  \"email\": \"saifali@gmail.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/register",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "register"]
+            },
+            "description": "Registrasi user baru dengan role default customer"
+          },
+          "response": [
+            {
+              "name": "201 Created",
+              "status": "Created",
+              "code": 201,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Registrasi berhasil\",\n  \"data\": {\n    \"id\": 1,\n    \"name\": \"Saif Ali\",\n    \"email\": \"saifali@gmail.com\",\n    \"role\": \"customer\"\n  }\n}"
+            },
+            {
+              "name": "409 Email Sudah Terdaftar",
+              "status": "Conflict",
+              "code": 409,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Email sudah terdaftar\"\n}"
+            },
+            {
+              "name": "422 Validasi Gagal",
+              "status": "Unprocessable Entity",
+              "code": 422,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Validasi gagal\",\n  \"errors\": [\n    { \"field\": \"email\", \"message\": \"Email tidak valid\" },\n    { \"field\": \"password\", \"message\": \"Password minimal 6 karakter\" }\n  ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Register Admin",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Admin CoolKicks\",\n  \"email\": \"admin@coolkicks.com\",\n  \"password\": \"admin123\",\n  \"role\": \"admin\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/register",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "register"]
+            },
+            "description": "Registrasi user dengan role admin"
+          },
+          "response": [
+            {
+              "name": "201 Created",
+              "status": "Created",
+              "code": 201,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Registrasi berhasil\",\n  \"data\": {\n    \"id\": 2,\n    \"name\": \"Admin CoolKicks\",\n    \"email\": \"admin@coolkicks.com\",\n    \"role\": \"admin\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.success && res.data.user.role === 'admin') {",
+                  "    pm.collectionVariables.set('token_admin', res.data.token);",
+                  "} else if (res.success && res.data.user.role === 'customer') {",
+                  "    pm.collectionVariables.set('token_customer', res.data.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"saifali@gmail.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "login"]
+            },
+            "description": "Login user. Token otomatis tersimpan ke collection variable token_customer atau token_admin"
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Login berhasil\",\n  \"data\": {\n    \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\",\n    \"user\": {\n      \"id\": 1,\n      \"name\": \"Saif Ali\",\n      \"email\": \"saifali@gmail.com\",\n      \"role\": \"customer\"\n    }\n  }\n}"
+            },
+            {
+              "name": "401 Salah Kredensial",
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Email atau password salah\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Login Admin",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.success && res.data.user.role === 'admin') {",
+                  "    pm.collectionVariables.set('token_admin', res.data.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@coolkicks.com\",\n  \"password\": \"admin123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "login"]
+            },
+            "description": "Login admin. Token otomatis tersimpan ke token_admin"
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Login berhasil\",\n  \"data\": {\n    \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\",\n    \"user\": {\n      \"id\": 2,\n      \"name\": \"Admin CoolKicks\",\n      \"email\": \"admin@coolkicks.com\",\n      \"role\": \"admin\"\n    }\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_customer}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/auth/profile",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "profile"]
+            },
+            "description": "Lihat profil user yang sedang login"
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"id\": 1,\n    \"name\": \"Saif Ali\",\n    \"email\": \"saifali@gmail.com\",\n    \"role\": \"customer\",\n    \"created_at\": \"2024-01-01T00:00:00.000Z\"\n  }\n}"
+            },
+            {
+              "name": "401 Unauthorized",
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Token tidak disertakan\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get All Users (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_admin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/auth/users",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "users"]
+            },
+            "description": "Daftar semua user. Hanya bisa diakses admin"
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": [\n    { \"id\": 1, \"name\": \"Saif Ali\", \"email\": \"saifali@gmail.com\", \"role\": \"customer\" },\n    { \"id\": 2, \"name\": \"Admin CoolKicks\", \"email\": \"admin@coolkicks.com\", \"role\": \"admin\" }\n  ]\n}"
+            },
+            {
+              "name": "403 Forbidden",
+              "status": "Forbidden",
+              "code": 403,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Akses ditolak: role tidak mencukupi\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Delete User (Admin)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_admin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/auth/users/1",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "users", "1"]
+            },
+            "description": "Hapus user berdasarkan ID. Hanya bisa diakses admin"
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"message\": \"User berhasil dihapus\"\n}"
+            },
+            {
+              "name": "404 Not Found",
+              "status": "Not Found",
+              "code": 404,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": false,\n  \"message\": \"User tidak ditemukan\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Product Service",
+      "item": [
+        {
+          "name": "Get All Products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/products",
+              "host": ["{{base_url}}"],
+              "path": ["products"]
+            },
+            "description": "Daftar semua produk sneakers. Tidak perlu auth"
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": [\n    {\n      \"id\": 1,\n      \"name\": \"Air Jordan 1 Retro High OG\",\n      \"brand\": \"Nike\",\n      \"price\": \"2450000.00\",\n      \"stock\": 15,\n      \"size\": \"42\",\n      \"image_url\": \"https://stockx.com/air-jordan-1-retro-high-og-chicago-reimagined-lost-and-found\"\n    },\n    {\n      \"id\": 2,\n      \"name\": \"Yeezy Boost 350 V2\",\n      \"brand\": \"Adidas\",\n      \"price\": \"3200000.00\",\n      \"stock\": 8,\n      \"size\": \"41\",\n      \"image_url\": \"https://stockx.com/adidas-yeezy-boost-350-v2-bone\"\n    }\n  ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Product by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/products/1",
+              "host": ["{{base_url}}"],
+              "path": ["products", "1"]
+            },
+            "description": "Detail satu produk berdasarkan ID. Tidak perlu auth"
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"id\": 1,\n    \"name\": \"Air Jordan 1 Retro High OG\",\n    \"brand\": \"Nike\",\n    \"price\": \"2450000.00\",\n    \"stock\": 15,\n    \"size\": \"42\",\n    \"image_url\": \"https://stockx.com/air-jordan-1-retro-high-og-chicago-reimagined-lost-and-found\"\n  }\n}"
+            },
+            {
+              "name": "404 Not Found",
+              "status": "Not Found",
+              "code": 404,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Produk tidak ditemukan\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Create Product (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_admin}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n      \"name\": \"New Balance 550\",\n      \"brand\": \"New Balance\",\n      \"price\": 1850000,\n      \"stock\": 20,\n      \"size\": \"43\",\n      \"image_url\": \"https://stockx.com/new-balance-550-white-green\"\n    }"
+            },
+            "url": {
+              "raw": "{{base_url}}/products",
+              "host": ["{{base_url}}"],
+              "path": ["products"]
+            },
+            "description": "Tambah produk baru. Hanya bisa diakses admin"
+          },
+          "response": [
+            {
+              "name": "201 Created",
+              "status": "Created",
+              "code": 201,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Produk berhasil ditambahkan\",\n  \"data\": {\n    \"id\": 3,\n    \"name\": \"New Balance 550\",\n    \"brand\": \"New Balance\",\n    \"price\": \"1850000.00\",\n    \"stock\": 20,\n    \"size\": \"43\",\n    \"image_url\": \"https://stockx.com/new-balance-550-white-green\"\n  }\n}"
+            },
+            {
+              "name": "422 Validasi Gagal",
+              "status": "Unprocessable Entity",
+              "code": 422,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Validasi gagal\",\n  \"errors\": [\n    { \"field\": \"name\", \"message\": \"Nama produk wajib diisi\" },\n    { \"field\": \"price\", \"message\": \"Harga harus lebih dari 0\" }\n  ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Update Product (Admin)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_admin}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"price\": 1750000,\n  \"stock\": 25\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/products/3",
+              "host": ["{{base_url}}"],
+              "path": ["products", "3"]
+            },
+            "description": "Update data produk berdasarkan ID. Hanya bisa diakses admin"
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Produk berhasil diupdate\",\n  \"data\": {\n    \"id\": 3,\n    \"name\": \"New Balance 550\",\n    \"brand\": \"New Balance\",\n    \"price\": \"1750000.00\",\n    \"stock\": 25,\n    \"size\": \"43\"\n  }\n}"
+            },
+            {
+              "name": "404 Not Found",
+              "status": "Not Found",
+              "code": 404,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Produk tidak ditemukan\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Delete Product (Admin)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_admin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/products/3",
+              "host": ["{{base_url}}"],
+              "path": ["products", "3"]
+            },
+            "description": "Hapus produk berdasarkan ID. Hanya bisa diakses admin"
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Produk berhasil dihapus\"\n}"
+            },
+            {
+              "name": "404 Not Found",
+              "status": "Not Found",
+              "code": 404,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Produk tidak ditemukan\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Order Service",
+      "item": [
+        {
+          "name": "Create Order (Customer)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_customer}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"product_id\": 1,\n  \"quantity\": 2\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/orders",
+              "host": ["{{base_url}}"],
+              "path": ["orders"]
+            },
+            "description": "Buat order baru. Hanya bisa diakses customer. Setelah order tersimpan, event dikirim ke RabbitMQ"
+          },
+          "response": [
+            {
+              "name": "201 Created",
+              "status": "Created",
+              "code": 201,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Order berhasil dibuat\",\n  \"data\": {\n    \"id\": 10,\n    \"user_id\": 1,\n    \"product_id\": 1,\n    \"quantity\": 2,\n    \"total_price\": \"4900000.00\",\n    \"status\": \"pending\"\n  }\n}"
+            },
+            {
+              "name": "400 Stok Tidak Cukup",
+              "status": "Bad Request",
+              "code": 400,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Stok tidak mencukupi\"\n}"
+            },
+            {
+              "name": "404 Produk Tidak Ditemukan",
+              "status": "Not Found",
+              "code": 404,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Produk tidak ditemukan\"\n}"
+            },
+            {
+              "name": "422 Validasi Gagal",
+              "status": "Unprocessable Entity",
+              "code": 422,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Validasi gagal\",\n  \"errors\": [\n    { \"field\": \"product_id\", \"message\": \"product_id tidak valid\" },\n    { \"field\": \"quantity\", \"message\": \"Quantity harus lebih dari 0\" }\n  ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get My Orders (Customer)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_customer}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/orders/my",
+              "host": ["{{base_url}}"],
+              "path": ["orders", "my"]
+            },
+            "description": "Lihat semua order milik user yang sedang login"
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": [\n    {\n      \"id\": 10,\n      \"user_id\": 1,\n      \"product_id\": 1,\n      \"quantity\": 2,\n      \"total_price\": \"4900000.00\",\n      \"status\": \"processed\",\n      \"product\": {\n        \"id\": 1,\n        \"name\": \"Air Jordan 1 Retro High OG\",\n        \"brand\": \"Nike\",\n        \"price\": \"2450000.00\"\n      }\n    }\n  ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get All Orders (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_admin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/orders",
+              "host": ["{{base_url}}"],
+              "path": ["orders"]
+            },
+            "description": "Lihat semua order dari semua user. Hanya bisa diakses admin"
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": [\n    {\n      \"id\": 10,\n      \"user_id\": 1,\n      \"product_id\": 1,\n      \"quantity\": 2,\n      \"total_price\": \"4900000.00\",\n      \"status\": \"processed\",\n      \"product\": {\n        \"id\": 1,\n        \"name\": \"Air Jordan 1 Retro High OG\",\n        \"brand\": \"Nike\",\n        \"price\": \"2450000.00\"\n      }\n    }\n  ]\n}"
+            },
+            {
+              "name": "403 Forbidden",
+              "status": "Forbidden",
+              "code": 403,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Akses ditolak: role tidak mencukupi\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Cancel Order (Customer)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_customer}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/orders/10/cancel",
+              "host": ["{{base_url}}"],
+              "path": ["orders", "10", "cancel"]
+            },
+            "description": "Batalkan order milik sendiri. Hanya order dengan status pending yang bisa dibatalkan"
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Order berhasil dibatalkan\",\n  \"data\": {\n    \"id\": 10,\n    \"status\": \"cancelled\"\n  }\n}"
+            },
+            {
+              "name": "400 Tidak Bisa Dibatalkan",
+              "status": "Bad Request",
+              "code": 400,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Hanya order pending yang bisa dibatalkan\"\n}"
+            },
+            {
+              "name": "404 Not Found",
+              "status": "Not Found",
+              "code": 404,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Order tidak ditemukan\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Update Order Status (Admin)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_admin}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"processed\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/orders/10/status",
+              "host": ["{{base_url}}"],
+              "path": ["orders", "10", "status"]
+            },
+            "description": "Update status order secara manual. Hanya bisa diakses admin. Status: pending | processed | cancelled"
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Status order diperbarui\",\n  \"data\": {\n    \"id\": 10,\n    \"status\": \"processed\"\n  }\n}"
+            },
+            {
+              "name": "422 Status Tidak Valid",
+              "status": "Unprocessable Entity",
+              "code": 422,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Status tidak valid\"\n}"
+            },
+            {
+              "name": "404 Not Found",
+              "status": "Not Found",
+              "code": 404,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Order tidak ditemukan\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Gateway",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/health",
+              "host": ["{{base_url}}"],
+              "path": ["health"]
+            },
+            "description": "Cek apakah API Gateway aktif"
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"message\": \"CoolKicks Gateway aktif\",\n  \"timestamp\": \"2024-01-01T00:00:00.000Z\"\n}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
