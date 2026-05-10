@@ -59,7 +59,6 @@ Client → API Gateway :3000
 | API Gateway | http-proxy-middleware |
 | Password Hashing | bcryptjs |
 | Validasi Input | express-validator |
-| Process Manager | PM2 |
 
 ---
 
@@ -87,7 +86,6 @@ Pastikan seluruh dependensi berikut sudah terinstal di server sebelum menjalanka
 - NPM
 - MySQL 8
 - RabbitMQ
-- PM2 (opsional, disarankan untuk production)
 
 ---
 
@@ -103,14 +101,11 @@ cd coolkicks
 **2. Buat database MySQL**
 
 ```bash
-mysql -u root -p
+mysql -u mahasiswa -p
 ```
 
 ```sql
-CREATE DATABASE coolkicks_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-CREATE USER 'coolkicks_user'@'localhost' IDENTIFIED BY 'rahasia123';
-GRANT ALL PRIVILEGES ON coolkicks_db.* TO 'coolkicks_user'@'localhost';
-FLUSH PRIVILEGES;
+CREATE DATABASE 2410511081_db_coolkicks
 ```
 
 **3. Pastikan RabbitMQ aktif**
@@ -130,21 +125,11 @@ cd order-consumer   && npm install && cd ..
 
 **5. Sesuaikan file `.env` di masing-masing service** dengan konfigurasi database dan RabbitMQ yang digunakan.
 
-**6. Jalankan semua service menggunakan PM2**
-
-```bash
-pm2 start auth-service/src/app.js     --name coolkicks-auth
-pm2 start product-service/src/app.js  --name coolkicks-product
-pm2 start order-consumer/consumer.js  --name coolkicks-consumer
-pm2 start gateway/index.js            --name coolkicks-gateway
-pm2 save
-```
-
 ---
 
 ## Endpoint
 
-Base URL: `http://103.147.92.134:3000`
+Base URL: `http://103.147.92.134:4081`
 
 ### Auth
 
@@ -234,6 +219,8 @@ coolkicks/
 ├── product-service/
 ├── order-consumer/
 ├── screenshots/
+├── .gitignore
+├── collection.json
 └── README.md
 ```
 
