@@ -215,10 +215,74 @@ Setiap service memiliki file `.env` masing-masing. Berikut variabel yang perlu d
 ```
 coolkicks/
 ├── gateway/
+│   ├── index.js
+│   ├── .env
+│   └── package.json
+│
 ├── auth-service/
+│   ├── src/
+│   │   ├── config/
+│   │   │   └── db.js
+│   │   ├── models/
+│   │   │   └── User.js
+│   │   ├── middlewares/
+│   │   │   ├── authMiddleware.js
+│   │   │   └── roleMiddleware.js
+│   │   ├── controllers/
+│   │   │   └── authController.js
+│   │   ├── routes/
+│   │   │   └── authRoutes.js
+│   │   └── app.js
+│   ├── .env
+│   └── package.json
+│
 ├── product-service/
+│   ├── src/
+│   │   ├── config/
+│   │   │   └── db.js
+│   │   ├── models/
+│   │   │   ├── Product.js
+│   │   │   └── Order.js
+│   │   ├── broker/
+│   │   │   └── publisher.js
+│   │   ├── middlewares/
+│   │   │   ├── authMiddleware.js
+│   │   │   └── roleMiddleware.js
+│   │   ├── controllers/
+│   │   │   ├── productController.js
+│   │   │   └── orderController.js
+│   │   ├── routes/
+│   │   │   ├── productRoutes.js
+│   │   │   └── orderRoutes.js
+│   │   └── app.js
+│   ├── .env
+│   └── package.json
+│
 ├── order-consumer/
+│   ├── consumer.js
+│   ├── .env
+│   └── package.json
+│
 ├── screenshots/
+│   ├── auth-register-customer.png
+│   ├── auth-register-admin.png
+│   ├── auth-login-customer.png
+│   ├── auth-login-admin.png
+│   ├── auth-get-profile.png
+│   ├── auth-get-all-users.png
+│   ├── auth-delete-user.png
+│   ├── product-get-all.png
+│   ├── product-get-by-id.png
+│   ├── product-create.png
+│   ├── product-update.png
+│   ├── product-delete.png
+│   ├── order-create.png
+│   ├── order-get-my.png
+│   ├── order-cancel.png
+│   ├── order-get-all.png
+│   ├── order-update-status.png
+│   └── gateway-health-check.png
+│
 ├── .gitignore
 ├── collection.json
 └── README.md
