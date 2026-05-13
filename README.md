@@ -334,6 +334,5 @@ coolkicks/
 
 ## Catatan
 
-- File `.env` tidak ikut ter-commit ke repository karena masuk daftar `.gitignore`
 - Tabel database dibuat otomatis oleh Sequelize saat service pertama kali dijalankan
 - Untuk import collection ke Postman, gunakan file `CoolKicks.postman_collection.json` yang tersedia di repository
